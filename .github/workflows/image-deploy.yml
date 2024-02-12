@@ -8,6 +8,7 @@ on:
 env:
   builder: "paketobuildpacks/builder-jammy-base"
   pack_version: "0.33.1"
+  ecr_repo_name: "cloudnative-buildpack-sample"
 
 jobs:
   build:
@@ -25,16 +26,24 @@ jobs:
           aws-region: "ap-northeast-1"
           role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
 
-      - name: AWS Access Test
+      - name: Login to Amazon ECR
         run: |
-          aws s3 ls s3://iot-input-data-bucket
+          ECR_DOMAIN="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com"
+          docker login --username AWS --password-stdin $ECR_DOMAIN
 
-      - name: Install pack
+      - name: Set up environment variables
         run: |
-          wget -q https://github.com/buildpacks/pack/releases/download/v${{ env.pack_version }}/pack-v${{ env.pack_version }}-linux.tgz -O - | tar -xz
-          chmod +x ./pack
+          COMMIT_HASH=$(echo $GITHUB_SHA | cut -c 1-7)
+          ECR_REPOSITORY="$ECR_DOMAIN/${{ env.ecr_repo_name }}"
+          IMAGE_TAG="$ECR_REPOSITORY:$COMMIT_HASH"
+          echo "::set-env name=IMAGE_TAG::$IMAGE_TAG"
 
-      - name: Build and push Docker image
-        run: |
-          ./pack build test_image --no-color --builder ${{ env.builder }} \
-            --path src/my-app
+    #   - name: Install pack
+    #     run: |
+    #       wget -q https://github.com/buildpacks/pack/releases/download/v${{ env.pack_version }}/pack-v${{ env.pack_version }}-linux.tgz -O - | tar -xz
+    #       chmod +x ./pack
+
+    #   - name: Build and push Docker image
+    #     run: |
+    #       ./pack build test_image --no-color --builder ${{ env.builder }} \
+    #         --path src/my-app
