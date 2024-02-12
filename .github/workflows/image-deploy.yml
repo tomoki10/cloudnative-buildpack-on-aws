@@ -17,6 +17,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Assume Role
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: "ap-northeast-1"
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+
+      - name: AWS Access Test
+        run: |
+          aws s3 ls s3://iot-input-data-bucket
+
       - name: Install pack
         run: |
           wget -q https://github.com/buildpacks/pack/releases/download/v${{ env.pack_version }}/pack-v${{ env.pack_version }}-linux.tgz -O - | tar -xz
