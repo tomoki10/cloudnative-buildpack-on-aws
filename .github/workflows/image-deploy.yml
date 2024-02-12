@@ -43,7 +43,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          ./pack build --no-color --builder ${{ env.builder }} \
+          ./pack build $IMAGE_TAG --no-color --builder ${{ env.builder }} \
             --path src/my-app \
             --tag $ECR_REPOSITORY:$IMAGE_TAG \
             --publish
