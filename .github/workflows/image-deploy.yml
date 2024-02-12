@@ -36,12 +36,16 @@ jobs:
           IMAGE_TAG="$ECR_REPOSITORY:$COMMIT_HASH"
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
-    #   - name: Install pack
-    #     run: |
-    #       wget -q https://github.com/buildpacks/pack/releases/download/v${{ env.pack_version }}/pack-v${{ env.pack_version }}-linux.tgz -O - | tar -xz
-    #       chmod +x ./pack
+      - name: Install pack
+        run: |
+          wget -q https://github.com/buildpacks/pack/releases/download/v${{ env.pack_version }}/pack-v${{ env.pack_version }}-linux.tgz -O - | tar -xz
+          chmod +x ./pack
 
-    #   - name: Build and push Docker image
-    #     run: |
-    #       ./pack build test_image --no-color --builder ${{ env.builder }} \
-    #         --path src/my-app
+      - name: Build and push Docker image
+        run: |
+          ./pack build test_image --no-color --builder ${{ env.builder }} \
+            --path src/my-app \
+            --tag $IMAGE_TAG \
+            $ECR_REPOSITORY:$IMAGE_TAG \
+            --cache-image $ECR_REPOSITORY:cache \
+            --publish
