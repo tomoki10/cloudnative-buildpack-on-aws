@@ -47,5 +47,4 @@ jobs:
             --path src/my-app \
             --tag $IMAGE_TAG \
             $ECR_REPOSITORY:$IMAGE_TAG \
-            --cache-image $ECR_REPOSITORY:cache \
             --publish
