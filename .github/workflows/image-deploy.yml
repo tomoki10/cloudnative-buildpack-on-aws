@@ -46,5 +46,5 @@ jobs:
         run: |
           ./pack build $IMAGE_TAG --no-color --builder ${{ env.builder }} \
             --path src/my-app \
-            --tag $ECR_REPOSITORY:$IMAGE_TAG \
+            --tag $IMAGE_TAG \
             --publish
