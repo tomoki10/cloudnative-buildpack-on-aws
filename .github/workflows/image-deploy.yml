@@ -36,6 +36,7 @@ jobs:
           ECR_REPOSITORY="$ECR_DOMAIN/${{ env.ecr_repo_name }}"
           IMAGE_TAG="$ECR_REPOSITORY:$COMMIT_HASH"
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
 
       - name: Install pack
         run: |
@@ -48,3 +49,13 @@ jobs:
             --path src/my-app \
             --tag $IMAGE_TAG \
             --publish
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: ECS Synth
+        run: |
+          npx cdk synth "EcsStack" -c imageTag=$COMMIT_HASH
