@@ -61,4 +61,4 @@ jobs:
 
       - name: ECS Deploy
         run: |
-          npx cdk deploy "EcsStack" -c imageTag=$COMMIT_HASH
+          npx cdk deploy "EcsStack" -c imageTag=$COMMIT_HASH --require-approval never
