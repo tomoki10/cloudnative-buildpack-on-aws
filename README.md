@@ -4,5 +4,7 @@ This repository is for trying CloudNative Buildpack on AWS.
 
 # Overview
 
-main branch push -> cloudnative buildpack run -> push image to ecr
-
+1. main branch push
+2. cloudnative buildpack run
+3. push image to ecr
+4. cdk deploy to ecs and more
